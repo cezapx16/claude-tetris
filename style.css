@@ -19,6 +19,25 @@ body {
   position: relative;
 }
 
+.game-area {
+  position: relative;
+}
+
+/* ---- Título ---- */
+.game-title {
+  text-align: center;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  margin-bottom: 16px;
+  padding-left: 8px; /* compensa el letter-spacing final */
+}
+
+.game-title span {
+  color: var(--c);
+  text-shadow: 0 0 12px var(--c), 0 3px 0 rgba(0, 0, 0, 0.5);
+}
+
 .game-container {
   display: flex;
   gap: 20px;
