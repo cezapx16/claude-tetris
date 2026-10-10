@@ -11,7 +11,7 @@ const COLORS = [
   '#ba68c8', // T - purple
   '#81c784', // S - green
   '#e57373', // Z - red
-  '#7986cb', // J - indigo
+  '#90caf9', // J - pale blue
   '#ffb74d', // L - orange
 ];
 
@@ -39,7 +39,9 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeBtn = document.getElementById('theme-btn');
 
+let theme, gridColor;
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function createBoard() {
@@ -169,7 +171,7 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -299,6 +301,31 @@ document.addEventListener('keydown', e => {
   updateHUD();
 });
 
+// El tema es una preferencia del usuario: init() no lo reinicia.
+function applyTheme(newTheme, redraw) {
+  theme = newTheme;
+  document.documentElement.dataset.theme = theme;
+  gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim();
+  const isDark = theme === 'dark';
+  themeBtn.textContent = isDark ? '☀️ Modo claro' : '🌙 Modo oscuro';
+  themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+  try { localStorage.setItem('tetris-theme', theme); } catch (e) {}
+  // En pausa o game over el loop está detenido, así que se redibuja a mano
+  if (redraw) {
+    draw();
+    drawNext();
+  }
+}
+
+themeBtn.addEventListener('click', () => {
+  applyTheme(theme === 'dark' ? 'light' : 'dark', true);
+  themeBtn.blur(); // evita que Space vuelva a pulsar el botón
+});
+
 restartBtn.addEventListener('click', init);
+
+let savedTheme = null;
+try { savedTheme = localStorage.getItem('tetris-theme'); } catch (e) {}
+applyTheme(savedTheme === 'light' ? 'light' : 'dark', false);
 
 init();
