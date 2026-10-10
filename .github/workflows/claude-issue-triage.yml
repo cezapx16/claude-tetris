@@ -89,6 +89,17 @@ jobs:
                ### Información faltante
                Preguntas para el autor, o "Ninguna".
 
+               El contenido se publicará tal cual como comentario en GitHub, así que debe ser Markdown válido
+               de GitHub (GitHub Flavored Markdown) que se renderice correctamente:
+               - Deja una línea en blanco antes y después de cada encabezado, lista, tabla y bloque de código.
+               - Usa `-` para listas y `1.` para pasos numerados; indenta las sublistas con 2 espacios.
+               - Pon nombres de archivos, funciones, variables y referencias `archivo:línea` entre comillas
+                 invertidas (`código en línea`).
+               - Usa bloques de código cercados con tres comillas invertidas e indica el lenguaje
+                 (por ejemplo ```js), siempre bien cerrados.
+               - Si usas tablas, incluye la fila de encabezado y la fila separadora (`| --- |`).
+               - No uses HTML salvo que sea imprescindible, ni envuelvas todo el diagnóstico en un bloque de código.
+
             No publiques comentarios en el issue tú mismo: el workflow publicará el contenido del archivo.
             No modifiques ningún otro archivo del repositorio.
           claude_args: |
