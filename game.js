@@ -243,6 +243,7 @@ function togglePause() {
 }
 
 function loop(ts) {
+  if (gameOver || paused) return;
   const dt = ts - lastTime;
   lastTime = ts;
   dropAccum += dt;
@@ -255,6 +256,8 @@ function loop(ts) {
     }
   }
   draw();
+  // lockPiece() may have ended the game; don't reschedule over endGame()'s cancel
+  if (gameOver) return;
   animId = requestAnimationFrame(loop);
 }
 
