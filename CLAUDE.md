@@ -18,15 +18,18 @@ Verification is manual: load the page and play.
 
 ## Architecture
 
-Three files: `index.html` (DOM: `#board` canvas, side panel HUD, `#next-canvas`, `#overlay`), `style.css` (dark theme), and `game.js` (all logic, loaded as a classic script with `'use strict'` — no modules, all state is top-level `let` globals reset by `init()`).
+Three files: `index.html` (DOM: `#board` canvas, side panel HUD, `#next-canvas`, `#overlay` holding the pause menu and the game-over box), `style.css` (dark theme), and `game.js` (all logic, loaded as a classic script with `'use strict'` — no modules, all state is top-level `let` globals reset by `init()`).
 
 Key conventions in `game.js`:
 
 - **Cell values double as piece type and color index.** `PIECES[type]` matrices store the type number (1–7) in filled cells, `board` cells store the same number (0 = empty), and `COLORS[n]` maps it to a color. `merge()` copies shape values straight into `board`. Adding a piece type means adding an entry at the same index in both `PIECES` and `COLORS` and updating the `* 7` in `randomPiece()`.
 - **`collide(shape, x, y)` is the single source of truth** for movement, rotation (with simple horizontal kicks `[0,-1,1,-2,2]` in `tryRotate`), ghost projection (`ghostY`), and game-over detection on `spawn()`. Rows with `y < 0` are allowed (above the board).
 - **Piece lifecycle:** `lockPiece()` → `merge()` → `clearLines()` (updates score/lines/level/`dropInterval`) → `spawn()` (promotes `next` to `current`, rolls a new `next`, calls `endGame()` if the new piece collides immediately).
-- **Game loop:** `loop(ts)` uses `requestAnimationFrame`, accumulates `dropAccum`, and stores the frame id in `animId`. Pause and game over stop the loop via `cancelAnimationFrame(animId)`. Note that `loop` always reschedules itself at the end, so a cancel issued from inside the loop (e.g. `endGame()` reached through an auto-drop `lockPiece()`) gets overridden. Keep this in mind when touching pause/game-over logic.
+- **Game loop:** `loop(ts)` uses `requestAnimationFrame`, accumulates `dropAccum`, and stores the frame id in `animId`. Pause and game over stop the loop via `cancelAnimationFrame(animId)`. `loop` bails out early when `gameOver`/`paused` is set and skips rescheduling if the game ended during the frame (a cancel issued from inside the loop, e.g. `endGame()` via an auto-drop `lockPiece()`, would otherwise be overridden). `resumeGame()` resets `lastTime` and `dropAccum` before rescheduling. Keep this in mind when touching pause/game-over logic.
 - **Rendering** is a full redraw each frame (`draw()`: grid → board → ghost at `globalAlpha 0.2` → current piece). `drawBlock()` is shared between the main and preview canvases; the preview is redrawn only on `spawn()`. The HUD (`updateHUD()`) is DOM text, updated on input and line clears.
-- The `#overlay` is shared by the pause and game-over states (title/score text is swapped). Only `init()` hides it.
+- The `#overlay` is shared by the pause menu (`#pause-menu`) and the game-over box (`#gameover-box`); `showOverlay('pause'|'gameover')` picks which one is visible. `hideOverlay()` (called by `init()` and `resumeGame()`) hides it, collapses the controls list and blurs any focused overlay button so Space/Enter can't re-trigger it.
+- **Pause menu:** `P`/`Escape` call `togglePause()` → `pauseGame()`/`resumeGame()`. While `paused`, the keydown handler routes every other key to `handleMenuKey()` (↑/↓ move focus, ←/→ change the start level, Space/Enter only activate a focused menu button), so game inputs are blocked.
+- **Levels:** `startLevel` is a user preference (persisted in `localStorage` as `tetris-start-level`, not reset by `init()`); `init()` copies it into the per-game `baseLevel`. `level = max(baseLevel, floor(lines / 10) + 1)` and `dropInterval = speedForLevel(level)`, in both `init()` and `clearLines()`.
+- **Preferences vs. game state:** `theme`/`startLevel` are preferences loaded at startup (`applyTheme`, `setStartLevel`) before `init()`. Wrap every `localStorage` access in try/catch.
 
 Board dimensions: `COLS × BLOCK` and `ROWS × BLOCK` must match the `width`/`height` attributes of `<canvas id="board">` in `index.html`.

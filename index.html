@@ -44,17 +44,42 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd><kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
     </div>
 
     <div id="overlay" class="overlay hidden">
-      <div class="overlay-box">
+      <div id="gameover-box" class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+        <button id="restart-btn" type="button">Reiniciar</button>
+      </div>
+
+      <div id="pause-menu" class="overlay-box pause-menu hidden" role="dialog" aria-labelledby="pause-title">
+        <p id="pause-title">PAUSA</p>
+        <button id="resume-btn" class="menu-btn primary" type="button">Reanudar</button>
+        <button id="pause-restart-btn" class="menu-btn" type="button">Reiniciar</button>
+        <button id="controls-btn" class="menu-btn" type="button" aria-expanded="false" aria-controls="pause-controls">Ver controles</button>
+        <ul id="pause-controls" class="pause-controls hidden">
+          <li><span><kbd>←</kbd><kbd>→</kbd></span> mover</li>
+          <li><span><kbd>↑</kbd> / <kbd>X</kbd></span> rotar</li>
+          <li><span><kbd>↓</kbd></span> bajar</li>
+          <li><span><kbd>Espacio</kbd></span> caída instantánea</li>
+          <li><span><kbd>P</kbd> / <kbd>Esc</kbd></span> pausa / reanudar</li>
+        </ul>
+        <div class="level-picker">
+          <span class="level-label" id="start-level-label">Nivel inicial</span>
+          <div class="level-control">
+            <button id="level-down" class="level-step" type="button" tabindex="-1" aria-label="Bajar nivel inicial">‹</button>
+            <span id="start-level" class="level-value" role="spinbutton" tabindex="0"
+                  aria-labelledby="start-level-label" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">1</span>
+            <button id="level-up" class="level-step" type="button" tabindex="-1" aria-label="Subir nivel inicial">›</button>
+          </div>
+          <span class="menu-hint">Se aplica al reiniciar</span>
+        </div>
+        <p class="menu-hint">↑ ↓ navegar · ← → nivel · Esc reanudar</p>
       </div>
     </div>
     </div>
