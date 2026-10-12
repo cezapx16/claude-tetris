@@ -211,11 +211,51 @@ kbd {
   background: var(--accent-hover);
 }
 
-/* ---- Toggle de tema ---- */
-#theme-btn {
+/* ---- Skins ---- */
+/* Neon pinta el tablero y la vista previa siempre en negro, en ambos temas */
+:root[data-skin="neon"] #board,
+:root[data-skin="neon"] #next-canvas {
+  background: #000;
+}
+
+/* ---- Controles superiores: skin + tema ---- */
+.top-controls {
   position: fixed;
   top: 16px;
   right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skin-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#skin-select {
+  background: var(--board-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+#skin-select:hover {
+  border-color: var(--accent);
+}
+
+/* ---- Toggle de tema ---- */
+#theme-btn {
   background: var(--board-bg);
   color: var(--text);
   border: 1px solid var(--border);

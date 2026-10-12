@@ -7,7 +7,18 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <button id="theme-btn" type="button">☀️ Modo claro</button>
+  <div class="top-controls">
+    <label class="skin-picker">
+      <span>Skin</span>
+      <select id="skin-select" aria-label="Elegir skin">
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+        <option value="pastel">Pastel</option>
+        <option value="pixel">Pixel art</option>
+      </select>
+    </label>
+    <button id="theme-btn" type="button">☀️ Modo claro</button>
+  </div>
 
   <div class="wrapper">
     <h1 class="game-title" aria-label="Tetris">
