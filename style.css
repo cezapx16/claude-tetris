@@ -405,3 +405,127 @@ kbd {
 #theme-btn:hover {
   border-color: var(--accent);
 }
+
+/* ---- Records (pantalla de inicio y game over) ---- */
+#overlay .hidden {
+  display: none !important;
+}
+
+#play-btn,
+#save-btn {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#save-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+#play-btn:hover,
+#save-btn:hover {
+  background: var(--accent-hover);
+}
+
+.record-badge {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.name-form {
+  display: flex;
+  gap: 8px;
+}
+
+#name-input {
+  width: 140px;
+  background: var(--board-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+#name-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.records {
+  width: 100%;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.records-table th {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--label);
+  font-weight: 600;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.records-table td {
+  padding: 4px 6px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.records-table td:nth-child(2) {
+  text-align: left;
+  font-family: inherit;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.records-table tr.highlight td {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.records-empty,
+.records-stats {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
