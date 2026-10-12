@@ -43,7 +43,7 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Vista previa** de la siguiente pieza.
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
-- **Pausa** y **Game Over** con opción de reinicio.
+- **Menú de pausa** (reanudar, reiniciar, ver controles, nivel inicial) y **Game Over** con opción de reinicio.
 - **Tema claro / oscuro** y **skins** visuales (Retro, Neon, Pastel y Pixel art) que se cambian al vuelo y se recuerdan entre visitas.
 
 ---
@@ -87,7 +87,18 @@ Después abre `http://localhost:8000` en el navegador.
 | `↑` o `X` | Rotar la pieza en sentido horario |
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
-| `P`       | Pausar / reanudar                 |
+| `P` o `Esc` | Pausar / reanudar (abre el menú de pausa) |
+
+### Menú de pausa
+
+Al pausar con `P` o `Esc` aparece un menú con:
+
+- **Reanudar**: vuelve a la partida.
+- **Reiniciar**: empieza una partida nueva sin recargar la página.
+- **Ver controles**: muestra u oculta la lista de teclas.
+- **Nivel inicial**: elige con qué nivel (1–10) empieza la próxima partida; se guarda en el navegador y se aplica al pulsar **Reiniciar**.
+
+Mientras el menú está abierto las teclas del juego quedan bloqueadas, así que la pieza no se mueve por accidente. Dentro del menú se navega con `↑` / `↓`, se activa la opción con `Enter` o `Espacio` y se cambia el nivel inicial con `←` / `→`.
 
 ### Skins
 
@@ -114,7 +125,7 @@ Define la estructura visual:
 
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
-- Un overlay para los estados **PAUSA** y **GAME OVER**.
+- Un overlay compartido con el **menú de pausa** y la pantalla de **GAME OVER**.
 - Los controles superiores: selector de skin y botón de tema claro/oscuro.
 
 ### 2. `style.css`
@@ -133,7 +144,7 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Game loop** (`loop`): basado en `requestAnimationFrame`, acumula el tiempo transcurrido y baja la pieza una fila cuando se supera `dropInterval`.
 - **Limpieza de líneas** (`clearLines`): recorre el tablero de abajo hacia arriba; cada fila completa se elimina y se inserta una vacía en la cima.
 - **Puntuación**: usa la tabla clásica `[0, 100, 300, 500, 800]` multiplicada por el nivel actual; el hard drop suma 2 puntos por celda recorrida y el soft drop 1 punto por fila.
-- **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
+- **Nivel y velocidad**: la partida empieza en el nivel inicial elegido en el menú de pausa y el nivel es `max(nivel inicial, floor(líneas / 10) + 1)`; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
 
 ### Flujo del juego
@@ -151,7 +162,7 @@ init()
      ├─ draw()  (grid + tablero + ghost + pieza actual)
      └─ requestAnimationFrame(loop)
 
-   keydown → mover / rotar / soft-drop / hard-drop / pausa
+   keydown → mover / rotar / soft-drop / hard-drop / pausa (con el menú abierto solo navega el menú)
 ```
 
 Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara `endGame()` y se muestra el overlay de **Game Over**.
