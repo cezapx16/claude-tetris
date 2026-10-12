@@ -17,6 +17,7 @@ Implementación del clásico **Tetris** en JavaScript vanilla, usando HTML5 Canv
     - [Opción 1: abrir el archivo directamente](#opción-1-abrir-el-archivo-directamente)
     - [Opción 2: servidor local (recomendado)](#opción-2-servidor-local-recomendado)
   - [Controles](#controles)
+    - [Skins](#skins)
   - [Cómo funciona](#cómo-funciona)
     - [1. `index.html`](#1-indexhtml)
     - [2. `style.css`](#2-stylecss)
@@ -43,6 +44,7 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
+- **Tema claro / oscuro** y **skins** visuales (Retro, Neon, Pastel y Pixel art) que se cambian al vuelo y se recuerdan entre visitas.
 
 ---
 
@@ -87,6 +89,19 @@ Después abre `http://localhost:8000` en el navegador.
 | `Espacio` | Hard drop (caída instantánea)     |
 | `P`       | Pausar / reanudar                 |
 
+### Skins
+
+Con el selector **Skin** (arriba a la derecha, junto al botón de tema) puedes cambiar la apariencia completa del juego sin recargar la página:
+
+| Skin          | Aspecto                                                             |
+| ------------- | ------------------------------------------------------------------- |
+| **Retro**     | Bloques cuadrados con colores planos (el estilo clásico).           |
+| **Neon**      | Fondo negro y bloques con contorno brillante y efecto _glow_.       |
+| **Pastel**    | Colores suaves y bloques con bordes redondeados.                    |
+| **Pixel art** | Bloques con biselado en píxeles grandes y una textura de tramado.   |
+
+La skin elegida se guarda en `localStorage` (clave `tetris-skin`) y se aplica al volver a abrir el juego. Se puede cambiar también en pausa o tras el Game Over: el tablero se redibuja al instante. Todas las skins funcionan con el tema claro y el oscuro (Neon mantiene siempre el tablero negro).
+
 ---
 
 ## Cómo funciona
@@ -100,6 +115,7 @@ Define la estructura visual:
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
 - Un overlay para los estados **PAUSA** y **GAME OVER**.
+- Los controles superiores: selector de skin y botón de tema claro/oscuro.
 
 ### 2. `style.css`
 
@@ -110,6 +126,7 @@ Aporta el aspecto visual con estética _dark / retro arcade_: fondo oscuro, tipo
 Contiene toda la lógica del juego. A grandes rasgos:
 
 - **Modelo del tablero**: una matriz `ROWS × COLS` donde cada celda guarda `0` (vacía) o un índice de color (1–8) que identifica la pieza.
+- **Skins** (`SKINS`): cada skin tiene su paleta `colors` (indexada igual que las piezas) y su propia función de dibujo de bloque. `drawBlock()` aplica la transparencia y restaura el estado del canvas tras cada bloque, así que el glow de Neon (`shadowBlur`) no se filtra al resto del dibujo.
 - **Piezas**: definidas como matrices cuadradas. Para rotar se calcula la transposición + reverso de filas (`rotateCW`).
 - **Detección de colisiones** (`collide`): comprueba que ninguna celda de la pieza salga del tablero ni se solape con bloques ya fijados.
 - **Wall kicks** (`tryRotate`): si la rotación choca, intenta desplazar la pieza ±1 y ±2 columnas antes de descartar el giro.
@@ -158,7 +175,7 @@ Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara
 ```
 03-tetris/
 ├── index.html      # Estructura del DOM y canvas
-├── style.css       # Estilos del juego (dark theme)
+├── style.css       # Estilos del juego (temas claro/oscuro y skins)
 ├── game.js         # Toda la lógica del Tetris (~300 líneas)
 └── README.md
 ```
@@ -174,9 +191,11 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `COLS`         | Columnas del tablero                     | `10`                  |
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
-| `COLORS`       | Paleta de colores por tipo de pieza      | 8 colores             |
+| `SKINS`        | Paleta y estilo de dibujo de cada skin   | 4 skins × 8 colores   |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
+
+> Si añades un tipo de pieza, añade también su color en el array `colors` de **cada** skin de `SKINS`.
 
 > Si cambias `COLS`, `ROWS` o `BLOCK`, recuerda ajustar también `width` y `height` del `<canvas id="board">` en `index.html` para que coincida (`COLS × BLOCK` × `ROWS × BLOCK`).
 
